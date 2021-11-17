@@ -1,0 +1,11 @@
+.square {
+  background-color: white;
+  border: 1px solid grey;
+  cursor: pointer;
+  float: left;
+  height: 10vh;
+  width: 10vh;
+  margin-right: -3px;
+  margin-top: -3px;
+  outline: none;
+}
