@@ -9,7 +9,6 @@ const Square = ({ row, column }) => {
     <button
       className="square"
       onClick={() => {
-        console.log(row);
         markSquare(row, column);
       }}
     >

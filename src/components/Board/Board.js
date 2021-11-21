@@ -4,11 +4,11 @@ import Square from "../Square/Square";
 import "./styles.css";
 
 const Board = () => {
-  const { player } = useContext(GameContext);
+  const { getPlayer } = useContext(GameContext);
 
   return (
     <div className="board">
-      <h2 className="board__helper">Current Player is: {player}</h2>
+      <h2 className="board__helper">Current Player is: {getPlayer()}</h2>
       <div className="board__row">
         <Square row={0} column={0}></Square>
         <Square row={0} column={1}></Square>

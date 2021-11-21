@@ -3,13 +3,22 @@ import { useState, createContext, useEffect } from "react";
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
-  const [player, setPlayer] = useState("X");
-  const [board, setBoard] = useState(Array(3).fill(Array(3).fill(null)));
+  const player1 = "X";
+  const player2 = "O";
+
+  const initialBoard = Array(3).fill(Array(3).fill(null));
+  const initialHistory = [
+    {
+      board: initialBoard,
+      nextPlayer: player1,
+    },
+  ];
+
+  const [board, setBoard] = useState(initialBoard);
+  const [history, setHistory] = useState(initialHistory);
+  const [currentMove, setCurrentMove] = useState(0);
 
   useEffect(() => {
-    const player1 = "X";
-    const player2 = "O";
-
     const diagonal1 =
       board[0][0] === board[1][1] &&
       board[1][1] === board[2][2] &&
@@ -22,6 +31,7 @@ export const GameProvider = ({ children }) => {
 
     if (diagonal1 || diagonal2) {
       alert(`Player ${board[1][1]} won!`);
+      restart();
       return;
     }
 
@@ -31,7 +41,7 @@ export const GameProvider = ({ children }) => {
         board[rowIndex].every((square) => square === player2)
       ) {
         alert(`Player ${board[rowIndex][0]} won!`);
-
+        restart();
         return;
       }
       if (
@@ -39,11 +49,20 @@ export const GameProvider = ({ children }) => {
         board.every((row) => row[rowIndex] === player2)
       ) {
         alert(`Player ${board[0][rowIndex]} won!`);
+        restart();
 
         return;
       }
     }
   }, [board]);
+
+  function restart() {
+    setTimeout(() => {
+      setCurrentMove(0);
+      setBoard(initialBoard);
+      setHistory(initialHistory);
+    }, 3000);
+  }
 
   function getSquare(rowIndex, index) {
     return board[rowIndex][index];
@@ -54,20 +73,56 @@ export const GameProvider = ({ children }) => {
 
     const row = board[rowIndex].slice();
 
-    row[index] = player;
+    row[index] = history[currentMove].nextPlayer;
     boardCopy[rowIndex] = row;
 
-    if (player === "X") {
-      setPlayer("O");
+    let nextPlayer = "";
+    if (history[currentMove].nextPlayer === "X") {
+      nextPlayer = "O";
     } else {
-      setPlayer("X");
+      nextPlayer = "X";
+    }
+
+    if (currentMove + 1 < history.length) {
+      const historyCopy = history.slice(currentMove);
+
+      setHistory([
+        ...historyCopy,
+        { board: boardCopy, nextPlayer: nextPlayer },
+      ]);
+      setCurrentMove(historyCopy.length);
+    } else {
+      setHistory([...history, { board: boardCopy, nextPlayer: nextPlayer }]);
+      setCurrentMove(currentMove + 1);
     }
 
     setBoard(boardCopy);
   }
 
+  function back() {
+    if (currentMove > 0) {
+      const move = currentMove - 1;
+      setCurrentMove(move);
+      setBoard(history[move]["board"]);
+    }
+  }
+
+  function forward() {
+    if (currentMove < history.length) {
+      const move = currentMove + 1;
+      setCurrentMove(move);
+      setBoard(history[move]["board"]);
+    }
+  }
+
+  function getPlayer() {
+    return history[currentMove].nextPlayer;
+  }
+
   return (
-    <GameContext.Provider value={{ player, markSquare, getSquare }}>
+    <GameContext.Provider
+      value={{ getPlayer, markSquare, getSquare, back, forward }}
+    >
       {children}
     </GameContext.Provider>
   );

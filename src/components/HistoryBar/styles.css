@@ -1,0 +1,19 @@
+.bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.bar__item {
+  list-style-type: none;
+}
+
+.bar__item__button {
+  border-radius: 4px;
+  border: 1px solid grey;
+  padding: 0.75rem;
+  font-size: 1.25rem;
+  outline: none;
+}
