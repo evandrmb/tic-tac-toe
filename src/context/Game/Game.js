@@ -19,6 +19,14 @@ export const GameProvider = ({ children }) => {
   const [currentMove, setCurrentMove] = useState(0);
 
   useEffect(() => {
+    function restart() {
+      setTimeout(() => {
+        setCurrentMove(0);
+        setBoard(initialBoard);
+        setHistory(initialHistory);
+      }, 3000);
+    }
+
     const diagonal1 =
       board[0][0] === board[1][1] &&
       board[1][1] === board[2][2] &&
@@ -55,14 +63,6 @@ export const GameProvider = ({ children }) => {
       }
     }
   }, [board]);
-
-  function restart() {
-    setTimeout(() => {
-      setCurrentMove(0);
-      setBoard(initialBoard);
-      setHistory(initialHistory);
-    }, 3000);
-  }
 
   function getSquare(rowIndex, index) {
     return board[rowIndex][index];
