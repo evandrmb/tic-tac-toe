@@ -17,6 +17,9 @@ export const GameProvider = ({ children }) => {
   const [board, setBoard] = useState(initialBoard);
   const [history, setHistory] = useState(initialHistory);
   const [currentMove, setCurrentMove] = useState(0);
+  // console.log("After Mark");
+  // console.log(`HistoryLength: ${history.length}`);
+  // console.log(`CurrentMove: ${currentMove}`);
 
   useEffect(() => {
     function restart() {
@@ -83,8 +86,10 @@ export const GameProvider = ({ children }) => {
       nextPlayer = "X";
     }
 
-    if (currentMove + 1 < history.length) {
-      const historyCopy = history.slice(currentMove);
+    const move = currentMove + 1;
+
+    if (move < history.length) {
+      const historyCopy = history.slice(0, move);
 
       setHistory([
         ...historyCopy,
@@ -93,7 +98,7 @@ export const GameProvider = ({ children }) => {
       setCurrentMove(historyCopy.length);
     } else {
       setHistory([...history, { board: boardCopy, nextPlayer: nextPlayer }]);
-      setCurrentMove(currentMove + 1);
+      setCurrentMove(move);
     }
 
     setBoard(boardCopy);
@@ -108,8 +113,8 @@ export const GameProvider = ({ children }) => {
   }
 
   function forward() {
-    if (currentMove < history.length) {
-      const move = currentMove + 1;
+    const move = currentMove + 1;
+    if (move < history.length) {
       setCurrentMove(move);
       setBoard(history[move]["board"]);
     }
